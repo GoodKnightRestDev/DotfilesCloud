@@ -10,7 +10,7 @@
 - Setup script and environment variable changes only apply to new sessions. Secrets go through the credential form, never an environment variable.
 
 ## Git
-- Commit and push straight to `main`. No pull requests or other branches unless asked.
+- Commit and push to the branch the session is on: the one the platform assigns (named in the system prompt, e.g. `ccr-…`), otherwise `main`. No pull requests or extra branches unless asked.
 - Ship with `/ship` (patch version bump on every commit), never by hand. No `Co-authored-by` or other attribution trailers.
 - Minor and major bumps need the user's okay, but suggest them: minor after a new user-facing feature, major after a breaking change, with a one-line reason. Apply only after a yes: `~/.claude/scripts/ship.sh bump <repo-path> minor|major`, then `/ship`.
 

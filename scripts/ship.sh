@@ -19,10 +19,15 @@ usage() {
 cmd="$1"
 repo="$2"
 
-# The branch everything ships to: the remote's default branch, else main.
-target=$(git -C "$repo" symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null || true)
-target="${target#origin/}"
-target="${target:-main}"
+# The branch everything ships to: the branch you are on (in cloud sessions
+# that is the session branch the platform assigns). Detached HEAD falls back
+# to the remote's default branch, else main.
+target=$(git -C "$repo" branch --show-current)
+if [ -z "$target" ]; then
+  target=$(git -C "$repo" symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null || true)
+  target="${target#origin/}"
+  target="${target:-main}"
+fi
 
 case "$cmd" in
   info)
