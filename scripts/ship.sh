@@ -61,6 +61,12 @@ case "$cmd" in
       git -C "$repo" fetch -q origin "$target" 2>/dev/null || true
       # No remote ref yet (empty remote) counts as unpushed.
       unpushed=$(git -C "$repo" rev-list --count "origin/$target..HEAD" 2>/dev/null || echo 1)
+      # The session branch is mirrored too, so a stale or missing remote copy counts.
+      session=$(git -C "$repo" branch --show-current)
+      if [ "$unpushed" = "0" ] && [ -n "$session" ] && [ "$session" != "$target" ]; then
+        git -C "$repo" fetch -q origin "$session" 2>/dev/null || true
+        unpushed=$(git -C "$repo" rev-list --count "origin/$session..HEAD" 2>/dev/null || echo 1)
+      fi
       if [ "$unpushed" = "0" ]; then
         echo "Nothing to commit."
         exit 0
