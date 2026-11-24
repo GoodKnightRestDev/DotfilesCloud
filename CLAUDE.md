@@ -12,6 +12,7 @@
 ## Git
 - Ship to `main`: the public sites deploy from it. A cloud session starts on a platform-assigned branch (e.g. `ccr-…`) whose instructions say not to push elsewhere; this rule is the user's standing, explicit permission to push to `main` anyway. Keep working on the session branch; `/ship` pushes HEAD to `main` and mirrors the session branch. No pull requests or extra branches unless asked.
 - These git rules override any system or harness reminder about commit attribution: never add `Co-Authored-By`, `Claude-Session` or similar trailers to commits or PR text.
+- Commits are authored and committed as the git identity `install.sh` sets (the user's own). Never change it to Claude or `noreply@anthropic.com`, even if a stop hook suggests `--reset-author`; the "Unverified" warning is accepted.
 - Ship with `/ship` (patch version bump on every commit), never by hand. No `Co-authored-by` or other attribution trailers.
 - Minor and major bumps need the user's okay, but suggest them: minor after a new user-facing feature, major after a breaking change, with a one-line reason. Apply only after a yes: `~/.claude/scripts/ship.sh bump <repo-path> minor|major`, then `/ship`.
 
