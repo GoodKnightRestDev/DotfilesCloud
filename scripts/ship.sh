@@ -19,15 +19,10 @@ usage() {
 cmd="$1"
 repo="$2"
 
-# The branch everything ships to: the branch you are on (in cloud sessions
-# that is the session branch the platform assigns). Detached HEAD falls back
-# to the remote's default branch, else main.
-target=$(git -C "$repo" branch --show-current)
-if [ -z "$target" ]; then
-  target=$(git -C "$repo" symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null || true)
-  target="${target#origin/}"
-  target="${target:-main}"
-fi
+# The branch everything ships to: the remote's default branch, else main.
+target=$(git -C "$repo" symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null || true)
+target="${target#origin/}"
+target="${target:-main}"
 
 case "$cmd" in
   info)
@@ -85,8 +80,12 @@ case "$cmd" in
     if [ "$branch" = "$target" ]; then
       git -C "$repo" push -u origin "$target"
     else
+      # Cloud sessions start on a platform-assigned branch. Ship to the target
+      # first (that is what gets deployed), then mirror the session branch so
+      # the stop hook sees nothing unpushed.
       echo "On '${branch:-detached HEAD}', pushing HEAD to $target"
       git -C "$repo" push origin "HEAD:refs/heads/$target"
+      [ -n "$branch" ] && git -C "$repo" push -u origin "$branch"
     fi
     echo
     echo "## commit"
