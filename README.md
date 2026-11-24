@@ -8,4 +8,3 @@ Rules and helpers for cloud Claude Code sessions. Public on purpose: nothing per
 - `install.sh`: copies everything into `~/.claude`
 
 Run `./install.sh` from a setup script after cloning.
-
