@@ -93,6 +93,12 @@ case "$cmd" in
       git -C "$repo" push origin "HEAD:refs/heads/$target"
       [ -n "$branch" ] && git -C "$repo" push -u origin "$branch"
     fi
+    # DotfilesCloud only: new sessions install from the `stable` branch, so
+    # moving it is what rolls a shipped commit out.
+    origin_url=$(git -C "$repo" remote get-url origin 2>/dev/null || true)
+    case "${origin_url,,}" in
+      *goodknightrestdev/dotfilescloud*) git -C "$repo" push origin "HEAD:refs/heads/stable" ;;
+    esac
     echo
     echo "## commit"
     git -C "$repo" log -1 --oneline
